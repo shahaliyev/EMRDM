@@ -155,13 +155,11 @@ The code is based on the official implementations of the `generative-models`, `k
 
 ## :book:引用方法
 ```bibtex
-@misc{liu2025effectivecloudremovalremote,
-      title={Effective Cloud Removal for Remote Sensing Images by an Improved Mean-Reverting Denoising Model with Elucidated Design Space}, 
-      author={Yi Liu and Wengen Li and Jihong Guan and Shuigeng Zhou and Yichao Zhang},
-      year={2025},
-      eprint={2503.23717},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2503.23717}, 
+@inproceedings{liu2025effective,
+  title={Effective cloud removal for remote sensing images by an improved mean-reverting denoising model with elucidated design space},
+  author={Liu, Yi and Li, Wengen and Guan, Jihong and Zhou, Shuigeng and Zhang, Yichao},
+  booktitle={Proceedings of the Computer Vision and Pattern Recognition Conference},
+  pages={17851--17861},
+  year={2025}
 }
 ```
