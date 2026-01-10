@@ -456,13 +456,14 @@ class ResidualEDMSampler(SingleStepResidualDiffusionSampler):
         st = self.sigma2st(sigma) 
         sigma_hat = sigma * (gamma + 1.0)
         st_hat = self.sigma2st(sigma_hat)
+        st_bc = append_dims(st, x.ndim)
         st_hat_derivative = self.sigma2st.get_derivative_st()(sigma_hat)
         st_hat_bc = append_dims(st_hat, x.ndim)
         st_hat_derivative_bc = append_dims(st_hat_derivative, x.ndim)
         sigma_hat_bc = append_dims(sigma_hat, x.ndim)
         if gamma > 0:
             eps = torch.randn_like(x) * self.s_noise
-            x = x + ((1 - st_hat) / st_hat - (1 - st) / st) * mu + eps * append_dims(sigma_hat**2 - sigma**2, x.ndim) ** 0.5
+            x = x + ((1 - st_hat_bc) / st_hat_bc - (1 - st_bc) / st_bc) * mu + eps * append_dims(sigma_hat**2 - sigma**2, x.ndim) ** 0.5
         denoised = self.denoise(x, denoiser, sigma_hat, cond, st_hat, uc)
         # d = - (x - mu) - 2 * st_hat_bc * denoised + 2 * x 
         # d = - st_hat_bc * x + mu - (denoised - x) / sigma_hat_bc
