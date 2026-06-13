@@ -24,13 +24,7 @@ model.diffusion_model.patch_in.proj.weight: (128, 28) -> (128, 31)
 model_ema.diffusion_modelpatch_inprojweight: (128, 28) -> (128, 31)
 ```
 
-## 2. Start Fine-Tuning in tmux
-
-```bash
-tmux new -s emrdm_osm
-```
-
-Inside tmux:
+## 2. Start Fine-Tuning
 
 ```bash
 conda activate emrdm
@@ -43,22 +37,19 @@ Run fine-tuning:
 python main.py \
   -b configs/example_training/sentinel_osm.yaml \
   -t True \
+  --no-test True \
   model.params.ckpt_path=checkpoints/sentinel_osm/last_osm.ckpt \
-  lightning.trainer.max_steps=10000 \
-  lightning.trainer.max_epochs=-1
+  lightning.trainer.max_steps=5001 \
+  lightning.trainer.max_epochs=-1 \
+  lightning.trainer.limit_val_batches=0 \
+  lightning.trainer.num_sanity_val_steps=0 \
+  lightning.callbacks.image_logger.params.disabled=True \
+  lightning.modelcheckpoint.params.every_n_train_steps=1000
 ```
 
-Detach from tmux:
+For a shorter test, replace `5001` with `2001`. For a longer run, increase it.
 
-```bash
-Ctrl-b d
-```
-
-Reattach later:
-
-```bash
-tmux attach -t emrdm_osm
-```
+`--no-test True` and `lightning.callbacks.image_logger.params.disabled=True` are important for OSM fine-tuning. Without them, the post-training test/image logger can try to save the 18-channel conditioning tensor as an image.
 
 The fine-tuned checkpoint will be saved under:
 
@@ -123,9 +114,4 @@ Read these subsets first:
 
 The `all` subset may change only slightly because many test patches can have empty OSM masks.
 
-## Notes
-
-- The converted checkpoint is only the initialization checkpoint, not the fine-tuned result.
-- Fine-tuning creates new checkpoints in `logs/<osm_training_run>/checkpoints/`.
-- Lower is better for `RMSE`, `MAE`, and `SAM`.
-- Higher is better for `PSNR` and `SSIM`.
+Fine-tuning creates new checkpoints in `logs/<osm_training_run>/checkpoints/`.
